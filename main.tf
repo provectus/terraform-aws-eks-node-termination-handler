@@ -29,43 +29,43 @@ locals {
   repository     = "https://aws.github.io/eks-charts/"
   chart          = "aws-node-termination-handler"
   version        = var.chart_version
-}
 
-app = {
-  "apiVersion" = "argoproj.io/v1alpha1"
-  "kind"       = "Application"
-  "metadata" = {
-    "name"      = local.name
-    "namespace" = var.argocd.namespace
-  }
-  "spec" = {
-    "destination" = {
-      "namespace" = local.namespace
-      "server"    = "https://kubernetes.default.svc"
+  app = {
+    "apiVersion" = "argoproj.io/v1alpha1"
+    "kind"       = "Application"
+    "metadata" = {
+      "name"      = local.name
+      "namespace" = var.argocd.namespace
     }
-    "project" = "default"
-    "source" = {
-      "repoURL"        = local.repository
-      "targetRevision" = local.version
-      "chart"          = local.chart
-      "helm" = {
-        "parameters" = values({
-          for key, value in local.conf :
-          key => {
-            "name"  = key
-            "value" = tostring(value)
-          }
-        })
+    "spec" = {
+      "destination" = {
+        "namespace" = local.namespace
+        "server"    = "https://kubernetes.default.svc"
+      }
+      "project" = "default"
+      "source" = {
+        "repoURL"        = local.repository
+        "targetRevision" = local.version
+        "chart"          = local.chart
+        "helm" = {
+          "parameters" = values({
+            for key, value in local.conf :
+            key => {
+              "name"  = key
+              "value" = tostring(value)
+            }
+          })
+        }
+      }
+      "syncPolicy" = {
+        "automated" = {
+          "prune"    = true
+          "selfHeal" = true
+        }
+      }
+      "syncOptions" = {
+        "createNamespace" = true
       }
     }
-    "syncPolicy" = {
-      "automated" = {
-        "prune"    = true
-        "selfHeal" = true
-      }
-    }
-    "syncOptions" = {
-      "createNamespace" = true
-    }
-  }
+}
 }

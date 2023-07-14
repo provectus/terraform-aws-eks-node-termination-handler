@@ -1,0 +1,3 @@
+locals {
+  conf = "./chart.yml"
+}
