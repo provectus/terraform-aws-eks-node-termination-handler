@@ -16,12 +16,6 @@ variable "module_depends_on" {
   description = "A list of explicit dependencies"
 }
 
-variable "chart_version" {
-  type        = string
-  description = "A Helm Chart version"
-  default     = "4.3.0"
-}
-
 variable "aws_private" {
   type        = bool
   description = "Set true or false to use private or public infrastructure"
