@@ -50,3 +50,10 @@ variable "settings" {
   type    = map(string)
   default = {}
 }
+
+variable "chart_version" {
+  type        = string
+  description = "A Helm Chart version"
+  default     = "0.21.0"
+}
+
