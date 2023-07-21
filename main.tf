@@ -1,21 +1,3 @@
-resource "helm_release" "release" {
-  depends_on = [var.module_depends_on]
-  count      = var.enabled ? 1 : 0
-  chart      = local.chart
-  namespace  = local.namespace
-  name       = local.name
-  version    = local.version
-  repository = local.repository
-
-  dynamic "set" {
-    for_each = var.settings
-    content {
-      name  = set.key
-      value = set.value
-    }
-  }
-}
-
 resource "local_file" "this" {
   count    = local.argocd_enabled
   content  = yamlencode(local.app)
@@ -47,25 +29,16 @@ locals {
         "repoURL"        = local.repository
         "targetRevision" = local.version
         "chart"          = local.chart
-        "helm" = {
-          "parameters" = values({
-            for key, value in local.conf :
-            key => {
-              "name"  = key
-              "value" = tostring(value)
-            }
-          })
-        }
-      }
-      "syncPolicy" = {
-        "automated" = {
-          "prune"    = true
-          "selfHeal" = true
-        }
-      }
-      "syncOptions" = {
-        "createNamespace" = true
       }
     }
-}
+    "syncPolicy" = {
+      "automated" = {
+        "prune"    = true
+        "selfHeal" = true
+      }
+    }
+    "syncOptions" = {
+      "createNamespace" = true
+    }
+  }
 }

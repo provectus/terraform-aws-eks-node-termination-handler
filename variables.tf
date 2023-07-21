@@ -53,6 +53,6 @@ variable "tags" {
 }
 
 variable "settings" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
